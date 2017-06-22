@@ -54,8 +54,7 @@ data class AemInstance(
         }
     }
 
-    val credentials: String
-        get() = "$user:$password"
+    val credentials: String = "$user:$password"
 
     fun validate() {
         if (!URL_VALIDATOR.isValid(url)) {
