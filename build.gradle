@@ -28,6 +28,10 @@ dependencies {
     compile 'org.dm.gradle:gradle-bundle-plugin:0.10.0'
     compile 'org.apache.jackrabbit.vault:vault-cli:3.1.24'
     compile 'org.jsoup:jsoup:1.10.3'
+
+    testCompile gradleTestKit()
+    testCompile 'junit:junit:4.12'
+    testCompile  'com.github.kristofa:mock-http-server:4.1'
 }
 
 gradlePlugin {
