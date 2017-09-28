@@ -3,6 +3,8 @@ package com.cognifide.gradle.aem
 import com.cognifide.gradle.aem.instance.Instance
 import com.cognifide.gradle.aem.instance.LocalInstance
 import com.cognifide.gradle.aem.instance.RemoteInstance
+import com.cognifide.gradle.aem.instance.SatisfyTask
+import com.cognifide.gradle.aem.internal.PropertyParser
 import com.cognifide.gradle.aem.pkg.ComposeTask
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.lang.Closure
@@ -91,6 +93,19 @@ open class AemConfig(project: Project) : Serializable {
      */
     @Input
     var deploySnapshots: List<String> = mutableListOf("**/*-SNAPSHOT.zip")
+
+    /**
+     * Defines wildcard filters which are used to determine instances used in package deployment.
+     * This behavior could be overridden by specifying instance list property.
+     */
+    @Input
+    var deployInstanceFilter: String = "*"//project.properties.getOrElse(Instance.NAME_PROP, { Instance.FILTER_LOCAL }) as String
+
+    /**
+     * Defines wildcard filters which are used to determine group of packages to be satisfied.
+     */
+    @Input
+    var satisfyGroupFilter: String = "*" //project.properties.getOrElse(SatisfyTask.GROUP_PROP, { PropertyParser.FILTER_DEFAULT }) as String
 
     /**
      * Force upload CRX package regardless if it was previously uploaded.
@@ -205,7 +220,7 @@ open class AemConfig(project: Project) : Serializable {
      * Global options which are being applied to any Vault related command like 'aemVault' or 'aemCheckout'.
      */
     @Input
-    var vaultGlobalOptions: String = "--credentials \${instance.credentials}"
+    var vaultGlobalOptions: String = "--credentials {{instance.credentials}}"
 
     /**
      * Specify characters to be used as line endings when cleaning up checked out JCR content.
@@ -361,6 +376,14 @@ open class AemConfig(project: Project) : Serializable {
         }
 
     /**
+     * CRX package Vault files path.
+     */
+    @get:Internal
+    @get:JsonIgnore
+    val vaultPath: String
+        get() = "$contentPath/${AemPackagePlugin.VLT_PATH}/filter.xml"
+
+    /**
      * CRX package Vault filter path.
      * Also used by VLT tool as default filter for files being checked out from running AEM instance.
      *
@@ -369,12 +392,12 @@ open class AemConfig(project: Project) : Serializable {
     @get:Internal
     @get:JsonIgnore
     val vaultFilterPath: String
-        get() = "$contentPath/${AemPackagePlugin.VLT_PATH}/filter.xml"
+        get() = "$vaultPath/filter.xml"
 
     /**
      * Fallback for older form of configuration. Inner closure 'config' could be skipped.
      *
-     * @Deprecated
+     * @deprecated
      * @since 2.0.2
      */
     fun config(closure: Closure<*>) {

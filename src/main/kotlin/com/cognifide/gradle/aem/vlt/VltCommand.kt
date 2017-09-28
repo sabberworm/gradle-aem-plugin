@@ -3,6 +3,7 @@ package com.cognifide.gradle.aem.vlt
 import com.cognifide.gradle.aem.AemConfig
 import com.cognifide.gradle.aem.instance.Instance
 import com.cognifide.gradle.aem.internal.PropertyParser
+import com.cognifide.gradle.aem.internal.file.FileOperations
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import java.io.File
@@ -33,7 +34,7 @@ class VltCommand(val project: Project) {
             logger.info("JCR content directory to be checked out does not exist: ${contentDir.absolutePath}")
         }
 
-        raw("checkout --force --filter \${filter} \${instance.httpUrl}/crx/server/crx.default")
+        raw("checkout --force --filter {{filter}} {{instance.httpUrl}}/crx/server/crx.default")
     }
 
     fun raw(command: String) {
@@ -54,10 +55,8 @@ class VltCommand(val project: Project) {
         val cmdFilterPath = project.properties["aem.vlt.filter"] as String?
 
         if (!cmdFilterPath.isNullOrBlank()) {
-            val cmdFilter = project.file(cmdFilterPath)
-            if (!cmdFilter.exists()) {
-                throw VltException("Vault check out filter file does not exist at path: ${cmdFilter.absolutePath}")
-            }
+            val cmdFilter = FileOperations.find(project, config.vaultPath, cmdFilterPath!!)
+                    ?: throw VltException("Vault check out filter file does not exist at path: $cmdFilterPath")
 
             filter = cmdFilter
         }

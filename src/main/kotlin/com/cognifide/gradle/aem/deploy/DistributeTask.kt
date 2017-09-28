@@ -17,7 +17,7 @@ open class DistributeTask : SyncTask() {
 
     @TaskAction
     fun distribute() {
-        synchronizeInstances({ it.distributePackage() }, filterInstances(Instance.FILTER_AUTHOR))
+        synchronizeInstances({ it.distributePackage() }, Instance.filter(project, Instance.FILTER_AUTHOR))
     }
 
 }

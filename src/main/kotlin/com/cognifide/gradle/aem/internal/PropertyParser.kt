@@ -61,9 +61,7 @@ class PropertyParser(val project: Project) {
         return prop(name) ?: defaultValue()
     }
 
-    fun filter(value: String, propName: String, propDefault: String = FILTER_DEFAULT): Boolean {
-        val filters = project.properties.getOrElse(propName, { propDefault }) as String
-
+    fun filter(value: String, filters: String): Boolean {
         return filters.split(",").any { group -> Patterns.wildcard(value, group) }
     }
 

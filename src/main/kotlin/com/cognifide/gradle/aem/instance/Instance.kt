@@ -61,7 +61,11 @@ interface Instance : Serializable {
             )
         }
 
-        fun filter(project: Project, instanceFilter: String = FILTER_LOCAL): List<Instance> {
+        fun filter(project: Project): List<Instance> {
+            return filter(project, AemConfig.of(project).deployInstanceFilter)
+        }
+
+        fun filter(project: Project, instanceFilter: String): List<Instance> {
             val config = AemConfig.of(project)
             val instanceValues = project.properties[LIST_PROP] as String?
             if (!instanceValues.isNullOrBlank()) {
@@ -75,13 +79,13 @@ interface Instance : Serializable {
             }
 
             return instances.values.filter { instance ->
-                PropertyParser(project).filter(instance.name, NAME_PROP, instanceFilter)
+                PropertyParser(project).filter(instance.name, instanceFilter)
             }
         }
 
         @Suppress("unchecked_cast")
         fun <T : Instance> filter(project: Project, type: KClass<T>): List<T> {
-            return filter(project, Instance.FILTER_LOCAL).fold(mutableListOf<T>(), { result, instance ->
+            return filter(project).fold(mutableListOf(), { result, instance ->
                 if (type.isInstance(instance)) result += (instance as T); result
             })
         }

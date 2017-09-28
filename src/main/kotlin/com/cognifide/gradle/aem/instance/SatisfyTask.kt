@@ -16,6 +16,8 @@ open class SatisfyTask : SyncTask() {
         val NAME = "aemSatisfy"
 
         val DOWNLOAD_DIR = "download"
+
+        val GROUP_PROP = "aem.satisfy.group"
     }
 
     @get:Internal
@@ -24,7 +26,7 @@ open class SatisfyTask : SyncTask() {
 
     @get:Internal
     var groupFilter: (String) -> Boolean = { fileGroup ->
-        PropertyParser(project).filter(fileGroup, "aem.satisfy.group")
+        PropertyParser(project).filter(fileGroup, config.satisfyGroupFilter)
     }
 
     init {
@@ -54,6 +56,10 @@ open class SatisfyTask : SyncTask() {
 
     private fun satisfyPackagesOnInstances(groupedPackages: Map<String, List<File>>) {
         for ((group, files) in groupedPackages) {
+            if (files.isEmpty()) {
+                continue
+            }
+
             logger.info("Satisfying group of packages '$group'.")
 
             var shouldAwait = false

@@ -17,7 +17,7 @@ abstract class SyncTask : DefaultTask(), AemTask {
     protected val propertyParser = PropertyParser(project)
 
     protected fun synchronizeInstances(synchronizer: (InstanceSync) -> Unit) {
-        synchronizeInstances(synchronizer, filterInstances())
+        synchronizeInstances(synchronizer, Instance.filter(project))
     }
 
     protected fun <T : Instance> synchronizeInstances(synchronizer: (InstanceSync) -> Unit, instances: List<T>) {
@@ -41,12 +41,8 @@ abstract class SyncTask : DefaultTask(), AemTask {
         }
     }
 
-    protected fun filterInstances(instanceGroup: String = Instance.FILTER_LOCAL): List<Instance> {
-        return Instance.filter(project, instanceGroup)
-    }
-
     protected fun awaitStableInstances() {
-        InstanceActions.awaitStable(project, filterInstances())
+        InstanceActions.awaitStable(project, Instance.filter(project))
     }
 
     protected fun awaitStableLocalInstances() {
