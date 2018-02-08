@@ -245,8 +245,7 @@ class AemConfig(
      */
     @Input
     var dependBundlesTaskNames: List<String> = mutableListOf(
-            LifecycleBasePlugin.ASSEMBLE_TASK_NAME,
-            LifecycleBasePlugin.CHECK_TASK_NAME
+            LifecycleBasePlugin.ASSEMBLE_TASK_NAME
     )
 
     /**
