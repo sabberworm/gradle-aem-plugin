@@ -40,6 +40,7 @@ class InstancePlugin : Plugin<Project> {
         val reload = project.tasks.create(ReloadTask.NAME, ReloadTask::class.java)
         val satisfy = project.tasks.create(SatisfyTask.NAME, SatisfyTask::class.java)
         val await = project.tasks.create(AwaitTask.NAME, AwaitTask::class.java)
+        val tail = project.tasks.create(TailTask.NAME, TailTask::class.java)
         val collect = project.tasks.create(CollectTask.NAME, CollectTask::class.java)
 
         create.mustRunAfter(clean)
@@ -58,6 +59,8 @@ class InstancePlugin : Plugin<Project> {
             deploy.mustRunAfter(create, up, satisfy)
             reload.mustRunAfter(deploy, satisfy)
             await.mustRunAfter(deploy)
+            tail.mustRunAfter(await)
+            tail.mustRunAfter(deploy)
         })
 
         project.gradle.afterProject { subproject ->

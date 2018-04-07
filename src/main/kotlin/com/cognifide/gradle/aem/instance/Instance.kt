@@ -73,6 +73,11 @@ interface Instance : Serializable {
             return filter(project, AemConfig.of(project).deployInstanceName)
         }
 
+        fun byName(project: Project, instanceName: String): Instance {
+            return AemConfig.of(project).instances[instanceName]
+                    ?: throw AemException("Instance '$instanceName' is not defined.")
+        }
+
         fun filter(project: Project, instanceFilter: String): List<Instance> {
             val config = AemConfig.of(project)
 

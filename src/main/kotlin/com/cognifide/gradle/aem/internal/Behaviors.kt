@@ -22,6 +22,10 @@ object Behaviors {
         }
     }
 
+    fun loopForever(interval: Long, action: (Timer) -> Unit) {
+        waitUntil(interval, { action(it); true })
+    }
+
     class Timer {
 
         private var _started = time()
