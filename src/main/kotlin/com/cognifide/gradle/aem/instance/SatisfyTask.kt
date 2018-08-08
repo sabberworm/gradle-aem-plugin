@@ -80,10 +80,10 @@ open class SatisfyTask : AemDefaultTask() {
 
             var anyPackageSatisfied = false
 
-            packageGroup.instances.sync(project, { sync ->
-                val packageStates = packageGroup.files.fold(mutableMapOf<File, ListResponse.Package?>(), { states, pkg ->
+            packageGroup.instances.sync(project) { sync ->
+                val packageStates = packageGroup.files.fold(mutableMapOf<File, ListResponse.Package?>()) { states, pkg ->
                     states[pkg] = sync.determineRemotePackage(pkg, config.satisfyRefreshing); states
-                })
+                }
                 val anyPackageSatisfiable = packageStates.any {
                     sync.isSnapshot(it.key) || it.value == null || !it.value!!.installed
                 }
@@ -124,7 +124,7 @@ open class SatisfyTask : AemDefaultTask() {
                 if (anyPackageSatisfiable) {
                     packageGroup.finalizer(sync)
                 }
-            })
+            }
 
             if (anyPackageSatisfied) {
                 packageGroup.completer()

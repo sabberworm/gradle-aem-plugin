@@ -2,6 +2,7 @@ package com.cognifide.gradle.aem.base
 
 import com.cognifide.gradle.aem.api.AemExtension
 import com.cognifide.gradle.aem.api.AemPlugin
+import com.cognifide.gradle.aem.base.copy.CopyTask
 import com.cognifide.gradle.aem.base.debug.DebugTask
 import com.cognifide.gradle.aem.base.vlt.*
 import org.gradle.api.Plugin
@@ -38,6 +39,7 @@ class BasePlugin : Plugin<Project> {
     private fun Project.setupTasks() {
         tasks.create(DebugTask.NAME, DebugTask::class.java)
         tasks.create(RcpTask.NAME, RcpTask::class.java)
+        tasks.create(CopyTask.NAME, CopyTask::class.java)
 
         val clean = tasks.create(CleanTask.NAME, CleanTask::class.java)
         val vlt = tasks.create(VltTask.NAME, VltTask::class.java)

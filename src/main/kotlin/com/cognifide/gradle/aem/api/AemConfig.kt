@@ -471,7 +471,7 @@ class AemConfig(
      * This path determines a path in JCR repository in which such bundles will be deployed on AEM.
      */
     @Input
-    var satisfyBundlePath: String = props.string("aem.satisfy.bundlePath", "/apps/gradle-aem-plugin/satisfy/install")
+    var satisfyBundlePath: String = props.string("aem.satisfy.bundlePath", "/apps/gap/satisfy/install")
 
     /**
      * A hook which could be used to override default properties used to generate a CRX package from OSGi bundle.

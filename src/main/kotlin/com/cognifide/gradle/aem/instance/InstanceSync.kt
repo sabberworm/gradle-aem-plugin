@@ -4,6 +4,7 @@ import com.cognifide.gradle.aem.api.AemConfig
 import com.cognifide.gradle.aem.internal.Patterns
 import com.cognifide.gradle.aem.internal.ProgressCountdown
 import com.cognifide.gradle.aem.internal.http.PreemptiveAuthInterceptor
+import com.cognifide.gradle.aem.pkg.PackageJarWrapper
 import com.cognifide.gradle.aem.pkg.PackagePlugin
 import com.cognifide.gradle.aem.pkg.deploy.*
 import org.apache.commons.io.IOUtils
@@ -30,6 +31,7 @@ import org.jsoup.parser.Parser
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 import java.io.FileNotFoundException
+import java.io.InputStream
 import java.util.*
 
 class InstanceSync(val project: Project, val instance: Instance) {
@@ -173,9 +175,9 @@ class InstanceSync(val project: Project, val instance: Instance) {
     }
 
     private fun createEntityUrlencoded(params: Map<String, Any>): HttpEntity {
-        return UrlEncodedFormEntity(params.entries.fold(ArrayList<NameValuePair>(), { result, e ->
+        return UrlEncodedFormEntity(params.entries.fold(ArrayList<NameValuePair>()) { result, e ->
             result.add(BasicNameValuePair(e.key, e.value.toString())); result
-        }))
+        })
     }
 
     private fun createEntityMultipart(params: Map<String, Any>): HttpEntity {
@@ -426,6 +428,14 @@ class InstanceSync(val project: Project, val instance: Instance) {
         }
 
         return response
+    }
+
+    fun deploySelf() {
+        val jar = File(javaClass.protectionDomain.codeSource.location.file)
+        val wrapper = PackageJarWrapper(project, jar)
+        val pkg = wrapper.wrap()
+
+        deployPackage(pkg)
     }
 
     fun determineInstanceState(): InstanceState {
