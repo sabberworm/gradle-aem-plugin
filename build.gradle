@@ -3,7 +3,6 @@ plugins {
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.2.51'
     id 'com.jfrog.bintray' version '1.8.0'
-    id 'com.cognifide.aem.bundle'
 }
 
 group 'com.cognifide.gradle'
@@ -13,7 +12,6 @@ defaultTasks = ['clean', 'build', 'publishToMavenLocal']
 
 repositories {
     jcenter()
-    maven { url "https://repo.adobe.com/nexus/content/groups/public" }
 }
 
 dependencies {
@@ -39,52 +37,12 @@ dependencies {
     implementation 'com.mitchellbosecke:pebble:2.4.0'
     implementation 'fr.jcgay.send-notification:send-notification:0.14.0'
 
-    // OSGi runtime
-
-    compileOnly group: 'org.osgi', name: 'osgi.cmpn', version: '6.0.0'
-    compileOnly group: 'javax.servlet', name: 'servlet-api', version: '2.5'
-    compileOnly group: 'javax.jcr', name: 'jcr', version: '2.0'
-    compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compileOnly group: 'org.apache.geronimo.specs', name: 'geronimo-atinject_1.0_spec', version: '1.0'
-    compileOnly group: 'org.apache.sling', name: 'org.apache.sling.api', version: '2.16.4'
-    compileOnly group: 'org.apache.sling', name: 'org.apache.sling.jcr.api', version: '2.4.0'
-    compileOnly group: 'org.apache.sling', name: 'org.apache.sling.models.api', version: '1.3.6'
-    compileOnly group: 'com.google.code.gson', name: 'gson', version: '2.8.1'
-    compileOnly group: 'com.adobe.aem', name: 'uber-jar', version: '6.4.0', classifier: 'obfuscated-apis'
-    compileOnly group: 'joda-time', name: 'joda-time', version: '2.9.1'
-    compileOnly group: 'org.jetbrains', name: 'annotations', version: '13.0'
-    compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-osgi-bundle', version: '1.2.51' // TODO should it be on AEM? OSGi runtime written in java?
-
     // Testing runtime
 
     testImplementation gradleTestKit()
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
 }
-
-aem {
-    config {
-        bundlePackage = "com.cognifide.gradle.aem.osgi"
-    }
-    bundle {
-        attribute 'Import-Package', ([
-                '!aQute.bnd',
-                '!com.mitchellbosecke.pebble',
-                '!jcifs',
-                '!dorkbox',
-                '!fr.jcgay',
-                '!jcifs',
-                '!net.schmizz.sshj',
-                '!org.apache.jackrabbot.vault',
-                '!org.apache.tools.ant',
-                '!org.gradle',
-                '!org.jsoup',
-                '!org.reflections',
-                '!org.zeroturnaround'
-        ]).join(",") + ",*"
-    }
-}
-
 gradlePlugin {
     plugins {
         base {
